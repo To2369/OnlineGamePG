@@ -1,0 +1,81 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source">
+      <UniqueIdentifier>{f030c059-5dad-4e26-90c8-faffd416f8b9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Assignment">
+      <UniqueIdentifier>{6708d2d1-178b-4980-b910-44f898c3472f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Assignment\01_Assignment">
+      <UniqueIdentifier>{136e9818-5358-41f6-8c29-d7b9df863cd8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Character">
+      <UniqueIdentifier>{74feb347-9d86-4525-b71c-e752c833b4df}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Assignment\02_Assignment">
+      <UniqueIdentifier>{db47dd31-4dd0-4e19-b618-697d31a03f1a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Assignment\03_Assignment">
+      <UniqueIdentifier>{21d19058-0df6-4aaa-9c5f-e239fcfb950f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Assignment\04_Assignment">
+      <UniqueIdentifier>{46e0ef84-fc63-4b32-8fdb-9aa4a5d4a5af}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Assignment\05Assginment">
+      <UniqueIdentifier>{d9817c0a-a601-42e1-908b-bbb87b85a1fb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Assignment\06Assginment">
+      <UniqueIdentifier>{dfac3fa8-c0ed-4455-8fec-dc70aecbc1a5}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Source\Main.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\01ServerAssignment.cpp">
+      <Filter>Source\Assignment\01_Assignment</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Player.cpp">
+      <Filter>Source\Character</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\02ServerAssignment.cpp">
+      <Filter>Source\Assignment\02_Assignment</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\03ServerAssignment.cpp">
+      <Filter>Source\Assignment\03_Assignment</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\04ServerAssignment.cpp">
+      <Filter>Source\Assignment\04_Assignment</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\05ServerAssignment.cpp">
+      <Filter>Source\Assignment\05Assginment</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\06ServerAssignment.cpp">
+      <Filter>Source\Assignment\06Assginment</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Source\01ServerAssignment.h">
+      <Filter>Source\Assignment\01_Assignment</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Player.h">
+      <Filter>Source\Character</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\02ServerAssignment.h">
+      <Filter>Source\Assignment\02_Assignment</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\03ServerAssignment.h">
+      <Filter>Source\Assignment\03_Assignment</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\04ServerAssignment.h">
+      <Filter>Source\Assignment\04_Assignment</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\05ServerAssignment.h">
+      <Filter>Source\Assignment\05Assginment</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\06ServerAssignment.h">
+      <Filter>Source\Assignment\06Assginment</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
