@@ -1,2 +1,4 @@
 ﻿  01ClientAssignment.cpp
+C:\Users\2220082\OneDrive - yamaguchigakuen\デスクトップ\OnlineGamePG\Client\Source\Assignment\01ClientAssignment.cpp(85,55): warning C4267: '引数': 'size_t' から 'int' に変換しました。データが失われているかもしれません。
+     ライブラリ bin\x64\Debug\Client.lib とオブジェクト bin\x64\Debug\Client.exp を作成中
   Client.vcxproj -> C:\Users\2220082\OneDrive - yamaguchigakuen\デスクトップ\OnlineGamePG\Client\bin\x64\Debug\Client.exe

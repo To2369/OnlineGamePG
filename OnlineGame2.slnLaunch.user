@@ -4,11 +4,13 @@
     "Projects": [
       {
         "Name": "Client\\Client.vcxproj",
-        "Action": "Start"
+        "Action": "Start",
+        "DebugTarget": ""
       },
       {
         "Name": "Server\\Server.vcxproj",
-        "Action": "Start"
+        "Action": "Start",
+        "DebugTarget": ""
       }
     ]
   }

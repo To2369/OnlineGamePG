@@ -32,38 +32,63 @@ void ClientAssignment01::Initialize()
 
 	// TODO 01_10
 	// WinsockAPIを初期化
-	
+	if (WSAStartup(MAKEWORD(2, 2), &wsaData) != 0)
+	{
+		Logger::Print("1_1Err\n");
+		return;
+	}
 	addrinfo hints;				// DNSへ問い合わせに必要な情報を設定
 	addrinfo* addrInfo = NULL;	// 取得したアドレスがここに保存される
 	// ゼロクリア
 	ZeroMemory(&hints, sizeof(addrinfo));
 	// TODO 01_11
 	// DNS問い合わせに関する情報を設定
-
-
-	const char hostname[] = "";			// ドメイン指定
-	const char port[] = "";				// ポート番号指定
+	const char hostname[] = "localhost";			// ドメイン指定
+	const char port[] = "7000";				// ポート番号指定
 	// DNSへ問い合わせ
 
+	hints.ai_family = AF_INET;
+	hints.ai_socktype = SOCK_STREAM;
+	if (getaddrinfo(hostname, port, &hints, &addrInfo) != 0)
+	{
+		Logger::Print("getaddrinfo error.\n");
+		return;
+	}
 
 	// TODO 01_12
 	// WinsockAPIを初期化
 	// 取得したIPアドレスをsockaddr_inに変換しsin_addrを代入
-
+	addr.sin_addr = reinterpret_cast<sockaddr_in*>(addrInfo->ai_addr)->sin_addr;
+	addr.sin_family = AF_INET;
+	addr.sin_port = htons(7000);
 
 	// TODO 01_13
 	// ソケット作成
-
+	sock = socket(AF_INET, SOCK_DGRAM, 0);
+	if (sock == INVALID_SOCKET)
+	{
+		Logger::Print("01_13ERR\n");
+		return;
+	}
 
 	// TODO 01_14
 	// ノンブロッキング設定
 	u_long mode = 1;
-
-
+	int m = ioctlsocket(sock, FIONBIO, &mode);
+	if (m!=0)
+	{
+		Logger::Print("01_14ERR\n");
+		return;
+	}
 	// TODO 01_15
 	// クライアント情報をサーバへ知らせるためにsendto関数を最初に実行する。
-
-
+	int size = sendto(sock, "connect", strlen("connect") + 1, 0,
+		reinterpret_cast<sockaddr*>(&addr), sizeof(addr));
+	if (size<0)
+	{
+		Logger::Print("01_15ERR\n",WSAGetLastError());
+		return;
+	}
 
 	Logger::Print("Connect Success\n");
 	
@@ -99,11 +124,17 @@ void ClientAssignment01::Finalize()
 
 	// TODO 01_18
 	// ソケット終了
-
+	if (closesocket(sock)!=0)
+	{
+		Logger::Print("01_18ERR\n", WSAGetLastError());
+	}
 
 	// TODO 01_19
 	// WSA終了処理
-
+	if (WSACleanup() != 0)
+	{
+		Logger::Print("01_19ERR\n", WSAGetLastError());
+	}
 
 }
 
@@ -134,7 +165,8 @@ void ClientAssignment01::Render()
 			{
 				// TODO 01_16
 				// 入力されたデータを送信
-				int size = sendto(sock, input, static_cast<int>(strlen(input) + 1), 0, reinterpret_cast<sockaddr*>(&addr), static_cast<int>(sizeof(addr)));
+				int size = sendto(sock, input, static_cast<int>(strlen(input) + 1),
+					0, reinterpret_cast<sockaddr*>(&addr), static_cast<int>(sizeof(addr)));
 				if (size < 0)
 				{
 					Logger::Print("Error Code:%d\n",WSAGetLastError());
@@ -161,7 +193,11 @@ void ClientAssignment01::recvThread()
 
 		// TODO 01_17
 		// データ受信
-
+		size = recvfrom(sock, buffer, sizeof(buffer), 0, reinterpret_cast<sockaddr*>(&recvAddr), &len);
+		if (size > 0)
+		{
+			messages.push_back(buffer);
+		}
 
 	} while (loop);
 
