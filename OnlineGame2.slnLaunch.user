@@ -1,0 +1,15 @@
+[
+  {
+    "Name": "\u65B0\u3057\u3044\u30D7\u30ED\u30D5\u30A1\u30A4\u30EB",
+    "Projects": [
+      {
+        "Name": "Client\\Client.vcxproj",
+        "Action": "Start"
+      },
+      {
+        "Name": "Server\\Server.vcxproj",
+        "Action": "Start"
+      }
+    ]
+  }
+]

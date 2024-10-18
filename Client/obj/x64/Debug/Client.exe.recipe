@@ -2,45 +2,45 @@
 <Project>
   <ProjectOutputs>
     <ProjectOutput>
-      <FullPath>C:\Users\71046\OneDrive - yamaguchigakuen\授業\2024年度\オンラインゲームⅡ\学生配布\OnlineGame2\Client\bin\x64\Debug\Client.exe</FullPath>
+      <FullPath>C:\Users\2220082\OneDrive - yamaguchigakuen\デスクトップ\OnlineGamePG\Client\bin\x64\Debug\Client.exe</FullPath>
     </ProjectOutput>
   </ProjectOutputs>
   <ContentFiles>
     <ContentFile>
-      <FullPath>C:\Users\71046\OneDrive - yamaguchigakuen\授業\2024年度\オンラインゲームⅡ\学生配布\OnlineGame2\Client\Shader\DebugPS.cso</FullPath>
+      <FullPath>C:\Users\2220082\OneDrive - yamaguchigakuen\デスクトップ\OnlineGamePG\Client\Shader\DebugPS.cso</FullPath>
     </ContentFile>
     <ContentFile>
-      <FullPath>C:\Users\71046\OneDrive - yamaguchigakuen\授業\2024年度\オンラインゲームⅡ\学生配布\OnlineGame2\Client\Shader\DebugVS.cso</FullPath>
+      <FullPath>C:\Users\2220082\OneDrive - yamaguchigakuen\デスクトップ\OnlineGamePG\Client\Shader\DebugVS.cso</FullPath>
     </ContentFile>
     <ContentFile>
-      <FullPath>C:\Users\71046\OneDrive - yamaguchigakuen\授業\2024年度\オンラインゲームⅡ\学生配布\OnlineGame2\Client\Shader\FontPS.cso</FullPath>
+      <FullPath>C:\Users\2220082\OneDrive - yamaguchigakuen\デスクトップ\OnlineGamePG\Client\Shader\FontPS.cso</FullPath>
     </ContentFile>
     <ContentFile>
-      <FullPath>C:\Users\71046\OneDrive - yamaguchigakuen\授業\2024年度\オンラインゲームⅡ\学生配布\OnlineGame2\Client\Shader\FontVS.cso</FullPath>
+      <FullPath>C:\Users\2220082\OneDrive - yamaguchigakuen\デスクトップ\OnlineGamePG\Client\Shader\FontVS.cso</FullPath>
     </ContentFile>
     <ContentFile>
-      <FullPath>C:\Users\71046\OneDrive - yamaguchigakuen\授業\2024年度\オンラインゲームⅡ\学生配布\OnlineGame2\Client\Shader\ImGuiPS.cso</FullPath>
+      <FullPath>C:\Users\2220082\OneDrive - yamaguchigakuen\デスクトップ\OnlineGamePG\Client\Shader\ImGuiPS.cso</FullPath>
     </ContentFile>
     <ContentFile>
-      <FullPath>C:\Users\71046\OneDrive - yamaguchigakuen\授業\2024年度\オンラインゲームⅡ\学生配布\OnlineGame2\Client\Shader\ImGuiVS.cso</FullPath>
+      <FullPath>C:\Users\2220082\OneDrive - yamaguchigakuen\デスクトップ\OnlineGamePG\Client\Shader\ImGuiVS.cso</FullPath>
     </ContentFile>
     <ContentFile>
-      <FullPath>C:\Users\71046\OneDrive - yamaguchigakuen\授業\2024年度\オンラインゲームⅡ\学生配布\OnlineGame2\Client\Shader\LambertPS.cso</FullPath>
+      <FullPath>C:\Users\2220082\OneDrive - yamaguchigakuen\デスクトップ\OnlineGamePG\Client\Shader\LambertPS.cso</FullPath>
     </ContentFile>
     <ContentFile>
-      <FullPath>C:\Users\71046\OneDrive - yamaguchigakuen\授業\2024年度\オンラインゲームⅡ\学生配布\OnlineGame2\Client\Shader\LambertVS.cso</FullPath>
+      <FullPath>C:\Users\2220082\OneDrive - yamaguchigakuen\デスクトップ\OnlineGamePG\Client\Shader\LambertVS.cso</FullPath>
     </ContentFile>
     <ContentFile>
-      <FullPath>C:\Users\71046\OneDrive - yamaguchigakuen\授業\2024年度\オンラインゲームⅡ\学生配布\OnlineGame2\Client\Shader\LinePS.cso</FullPath>
+      <FullPath>C:\Users\2220082\OneDrive - yamaguchigakuen\デスクトップ\OnlineGamePG\Client\Shader\LinePS.cso</FullPath>
     </ContentFile>
     <ContentFile>
-      <FullPath>C:\Users\71046\OneDrive - yamaguchigakuen\授業\2024年度\オンラインゲームⅡ\学生配布\OnlineGame2\Client\Shader\LineVS.cso</FullPath>
+      <FullPath>C:\Users\2220082\OneDrive - yamaguchigakuen\デスクトップ\OnlineGamePG\Client\Shader\LineVS.cso</FullPath>
     </ContentFile>
     <ContentFile>
-      <FullPath>C:\Users\71046\OneDrive - yamaguchigakuen\授業\2024年度\オンラインゲームⅡ\学生配布\OnlineGame2\Client\Shader\SpritePS.cso</FullPath>
+      <FullPath>C:\Users\2220082\OneDrive - yamaguchigakuen\デスクトップ\OnlineGamePG\Client\Shader\SpritePS.cso</FullPath>
     </ContentFile>
     <ContentFile>
-      <FullPath>C:\Users\71046\OneDrive - yamaguchigakuen\授業\2024年度\オンラインゲームⅡ\学生配布\OnlineGame2\Client\Shader\SpriteVS.cso</FullPath>
+      <FullPath>C:\Users\2220082\OneDrive - yamaguchigakuen\デスクトップ\OnlineGamePG\Client\Shader\SpriteVS.cso</FullPath>
     </ContentFile>
   </ContentFiles>
   <SatelliteDlls />

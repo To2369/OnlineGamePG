@@ -32,8 +32,7 @@ void ClientAssignment01::Initialize()
 
 	// TODO 01_10
 	// WinsockAPIを初期化
-
-
+	
 	addrinfo hints;				// DNSへ問い合わせに必要な情報を設定
 	addrinfo* addrInfo = NULL;	// 取得したアドレスがここに保存される
 	// ゼロクリア
