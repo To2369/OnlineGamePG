@@ -1,8 +1,11 @@
-#include "03ServerAssignment.h"
+ï»¿#include "03ServerAssignment.h"
 
-
-
-// ƒT[ƒo‘¤ƒRƒ}ƒ“ƒh“ü—ÍƒXƒŒƒbƒh
+//-----å®šæ•°---------------------
+#define BUFFER_SIZE		2048
+#define PORT 7000
+#define XYZ000	DirectX::XMFLOAT3(0.0f,0.0f,0.0f)
+//----------------------------------------------------------------
+// ã‚µãƒ¼ãƒå´ã‚³ãƒãƒ³ãƒ‰å…¥åŠ›ã‚¹ãƒ¬ãƒƒãƒ‰
 void ServerAssignment03::Exit()
 {
 	while (loop) {
@@ -15,33 +18,34 @@ void ServerAssignment03::Exit()
 	}
 }
 
+//----å®Ÿè¡Œå‡¦ç†--------------------------------------------------------------
 void ServerAssignment03::Execute()
 {
-	// WinsockAPI‚ğ‰Šú‰»
+	// WinsockAPIã‚’åˆæœŸåŒ–
 	WSADATA wsaData;
 	if (WSAStartup(MAKEWORD(2, 2), &wsaData) != 0)
 	{
-		// ‰Šú‰»¸”s
+		// åˆæœŸåŒ–å¤±æ•—
 		std::cout << "WSA Initialize Failed." << std::endl;
 		return;
 	}
 
-	// ƒT[ƒo‚Ìó•tİ’è
+	// ã‚µãƒ¼ãƒã®å—ä»˜è¨­å®š
 	struct sockaddr_in addr {};
 	addr.sin_family = AF_INET;
-	addr.sin_port = htons(7000);
+	addr.sin_port = htons(PORT);
 	addr.sin_addr.S_un.S_addr = INADDR_ANY;//"0.0.0.0"
 
-	// ƒ\ƒPƒbƒg‚Ìì¬
+	// ã‚½ã‚±ãƒƒãƒˆã®ä½œæˆ
 	SOCKET sock = socket(AF_INET, SOCK_DGRAM, 0);
 	if (sock == INVALID_SOCKET) {
 		std::cout << "Create Socket Failed." << std::endl;
-		// 9.WSA‚Ì‰ğ•ú
+		// 9.WSAã®è§£æ”¾
 		WSACleanup();
 		return;
 	}
 
-	// ƒmƒ“ƒuƒƒbƒLƒ“ƒO
+	// ãƒãƒ³ãƒ–ãƒ­ãƒƒã‚­ãƒ³ã‚°
 	u_long mode = 1;
 	if (ioctlsocket(sock, FIONBIO, &mode) != 0)
 	{
@@ -49,7 +53,7 @@ void ServerAssignment03::Execute()
 		return;
 	}
 
-	// ƒ\ƒPƒbƒg‚Æó•tî•ñ‚ğ•R‚Ã‚¯‚é
+	// ã‚½ã‚±ãƒƒãƒˆã¨å—ä»˜æƒ…å ±ã‚’ç´ã¥ã‘ã‚‹
 	if (bind(sock, reinterpret_cast<sockaddr*>(&addr), sizeof(addr)) != 0)
 	{
 		std::cout << "Bind Failed." << std::endl;
@@ -58,58 +62,64 @@ void ServerAssignment03::Execute()
 
 	std::cout << "Server Initialize OK." << std::endl;
 
-	// ƒNƒ‰ƒCƒAƒ“ƒg‚©‚ç‚Ìó•tˆ—
+	// ã‚¯ãƒ©ã‚¤ã‚¢ãƒ³ãƒˆã‹ã‚‰ã®å—ä»˜å‡¦ç†
 	int size = sizeof(struct sockaddr_in);
 
-	// ƒT[ƒo‘¤‚©‚çƒRƒ}ƒ“ƒh“ü—Í‚ÅI—¹‚³‚ê‚é‚Ü‚Åƒ‹[ƒv‚·‚éB
-	// ƒL[ƒ{[ƒh‚Åexit‚ğ“ü—Í‚·‚é‚Æƒ‹[ƒv‚ğ”²‚¯‚é‚½‚ß‚Ì•ÊƒXƒŒƒbƒh‚ğ—pˆÓ
+	// ã‚µãƒ¼ãƒå´ã‹ã‚‰ã‚³ãƒãƒ³ãƒ‰å…¥åŠ›ã§çµ‚äº†ã•ã‚Œã‚‹ã¾ã§ãƒ«ãƒ¼ãƒ—ã™ã‚‹ã€‚
+	// ã‚­ãƒ¼ãƒœãƒ¼ãƒ‰ã§exitã‚’å…¥åŠ›ã™ã‚‹ã¨ãƒ«ãƒ¼ãƒ—ã‚’æŠœã‘ã‚‹ãŸã‚ã®åˆ¥ã‚¹ãƒ¬ãƒƒãƒ‰ã‚’ç”¨æ„
 	std::thread th(&ServerAssignment03::Exit, this);
 
 	do {
 		sockaddr_in temp{};
-		char buffer[2048]{};
+		char buffer[BUFFER_SIZE]{};
 		int len = sizeof(sockaddr);
 		int size = 0;
-		// TODO 03_01
-		// óMƒf[ƒ^‚ğbuffer‚É•Û‘¶
-		// ‘—MÒ‚Ìî•ñ‚Ítemp‚É•Û‘¶
 
+		//---------------------------------------------
+		// TODO 03_01
+		// å—ä¿¡(recvfrom)ã‚’è¡Œã„ã€å—ä¿¡ãƒ‡ãƒ¼ã‚¿ã‚’bufferã«ä¿å­˜
+		// é€ä¿¡è€…ã®æƒ…å ±ã¯tempã«ä¿å­˜
+		size = recvfrom(sock, reinterpret_cast<char*>(&buffer), sizeof(buffer), 0,
+			reinterpret_cast<sockaddr*>(&temp), &len);
 
 		if (size > 0)
 		{
+			//-------------------------------------------------------------
 			// TODO 03_02
-			// if(1)‚Íƒ_ƒ~[ƒR[ƒh‚Ì‚½‚ßAHasSameDataŠÖ”‚ğg—p‚µ‚Ä”»’f‚·‚éƒR[ƒh‚ÉC³‚µ‚È‚³‚¢
-			// HasSameData‚Ìd—l‚ÍŠÖ”‚ğ“Ç‚İ‚Ş‚±‚Æ
-			if(1)
-			{
-				// V‹KƒNƒ‰ƒCƒAƒ“ƒg‚Ìê‡
-				// óMƒf[ƒ^‚©‚çƒlƒbƒgƒ[ƒNƒ^ƒO‚ğæ“¾
+			// if(1)ã¯ãƒ€ãƒŸãƒ¼ã‚³ãƒ¼ãƒ‰
+			//èª²é¡Œã¯ã€HasSameDataé–¢æ•°ã‚’ä½¿ç”¨ã—ã¦åˆ¤æ–­ã™ã‚‹ã‚³ãƒ¼ãƒ‰ã«ä¿®æ­£ã—ãªã•ã„
+			// HasSameDataã®ä»•æ§˜ã¯é–¢æ•°ã‚’èª­ã¿è¾¼ã‚€ã“ã¨
+			//
+			if(!HasSameData(clients,temp/*èª²é¡Œ03_02ç™»éŒ²ãƒ‡ãƒ¼ã‚¿ã«åŒã˜ã‚‚ã®ãŒç„¡ã‘ã‚Œã°ã«å¤‰æ›´*/))
+			{//é€ä¿¡è€…ãŒç™»éŒ²ãƒªã‚¹ãƒˆã«ãªã„ï¼æ–°è¦ã‚¯ãƒ©ã‚¤ã‚¢ãƒ³ãƒˆãªã®ã§ä»¥ä¸‹ã®å‡¦ç†ã‚’è¡Œã†
+				// æ–°è¦ã‚¯ãƒ©ã‚¤ã‚¢ãƒ³ãƒˆã®å ´åˆ
+				// å—ä¿¡ãƒ‡ãƒ¼ã‚¿ã‹ã‚‰ãƒãƒƒãƒˆãƒ¯ãƒ¼ã‚¯ã‚¿ã‚°ã‚’å–å¾—
 				NetworkTag type;
 				memcpy_s(&type, sizeof(short), buffer, sizeof(short));
 
-				// æ“¾‚µ‚½ƒ^ƒO‚ğ‚à‚Æ‚Éˆ—‚ğ•ªŠò
+				// å–å¾—ã—ãŸã‚¿ã‚°ã‚’ã‚‚ã¨ã«å‡¦ç†ã‚’åˆ†å²
 				switch (type)
 				{
 					case NetworkTag::Login:
 					{
-						// Loginƒ^ƒO‚Ìê‡
+						// Loginã‚¿ã‚°ã®å ´åˆ
 
-						// login‚ÉóMƒf[ƒ^‚ğƒRƒs[‚·‚é
+						// loginã«å—ä¿¡ãƒ‡ãƒ¼ã‚¿ã‚’ã‚³ãƒ”ãƒ¼ã™ã‚‹
 						PlayerLogin login{};
 						memcpy_s(&login, sizeof(PlayerLogin), buffer, sizeof(PlayerLogin));
 
-						// ID‚ğŠ„‚èU‚èŸ‚ÌÚ‘±Ò‚Ì‚½‚ß‚ÉID‚ğ‰ÁZ‚µ‚Ä‚¨‚­
+						// IDã‚’å‰²ã‚ŠæŒ¯ã‚Šæ¬¡ã®æ¥ç¶šè€…ã®ãŸã‚ã«IDã‚’åŠ ç®—ã—ã¦ãŠã
 						login.id = giveID;
 						++giveID;
 
-						// ƒvƒŒƒCƒ„[ì¬
+						// ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ä½œæˆ
 						Player player{};
 						player.id = login.id;
-						player.position = DirectX::XMFLOAT3(0, 0, 0);
-						player.angle = DirectX::XMFLOAT3(0, 0, 0);
+						player.position = XYZ000;
+						player.angle = XYZ000;
 						player.state = Player::State::Idle;
 
-						// V‹KƒNƒ‰ƒCƒAƒ“ƒg‚ğ’Ç‰Á
+						// æ–°è¦ã‚¯ãƒ©ã‚¤ã‚¢ãƒ³ãƒˆã‚’è¿½åŠ 
 						Client* newClient = new Client;
 						newClient->addr = temp;
 						newClient->player = player;
@@ -117,10 +127,20 @@ void ServerAssignment03::Execute()
 						std::cout << "new client insert." << std::endl;
 
 						for (Client* client : clients)
-						{
+						{//å…¨ã‚¯ãƒ©ã‚¤ã‚¢ãƒ³ãƒˆã ã‘ãƒ«ãƒ¼ãƒ—
+							//---------------------------------------------
 							// TODO 03_03
-							// ‘SƒNƒ‰ƒCƒAƒ“ƒg‚Élogin’Ê’m
+							// å…¨ã‚¯ãƒ©ã‚¤ã‚¢ãƒ³ãƒˆã«loginé€šçŸ¥(sendto)
 
+							sendto(sock, 
+								reinterpret_cast<char*>(&login),
+								static_cast<int>(sizeof(PlayerLogin)),
+								0,
+								reinterpret_cast<struct sockaddr*>(&client->addr),
+								static_cast<int>(sizeof(sockaddr_in)));
+							{
+
+							};
 
 							PlayerInformation plInfo{};
 							plInfo.cmd = NetworkTag::Sync;
@@ -128,12 +148,30 @@ void ServerAssignment03::Execute()
 							plInfo.position = client->player.position;
 							plInfo.angle = client->player.angle;
 							plInfo.state = client->player.state;
-							// TODO 03_04
-							// plInfo‚ğ‘—MÒ‚É‘—M
 
+							//---------------------------------------
+							// TODO 03_04
+							// ä½œæˆã—ãŸplInfoã‚’é€ä¿¡è€…ã«é€ä¿¡(sendto)
+							if (client->addr.sin_addr.S_un.S_addr != temp.sin_addr.S_un.S_addr)
+							{
+								PlayerInformation
+									plInfo{};
+								plInfo.cmd =
+									NetworkTag::Sync;
+								plInfo.id = client->player.id;
+								plInfo.position =client->player.position;
+								plInfo.angle = client->player.angle;
+								plInfo.state = client->player.state;
+								sendto(sock,
+									reinterpret_cast<char*>(&plInfo),
+									sizeof(PlayerInformation),
+									0,
+									reinterpret_cast<sockaddr*>(&temp),
+									sizeof(sockaddr_in)
+								);
+							}
 
 						}
-
 						break;
 					}
 					default:
@@ -144,8 +182,8 @@ void ServerAssignment03::Execute()
 			}
 			else
 			{
-				// Šù‘¶‚ÌƒNƒ‰ƒCƒAƒ“ƒg‚Ìê‡
-				// óMƒf[ƒ^‚©‚çƒlƒbƒgƒ[ƒNƒ^ƒO‚ğæ“¾
+				// æ—¢å­˜ã®ã‚¯ãƒ©ã‚¤ã‚¢ãƒ³ãƒˆã®å ´åˆ
+				// å—ä¿¡ãƒ‡ãƒ¼ã‚¿ã‹ã‚‰ãƒãƒƒãƒˆãƒ¯ãƒ¼ã‚¯ã‚¿ã‚°ã‚’å–å¾—
 				NetworkTag type;
 				memcpy_s(&type, sizeof(short), buffer, sizeof(short));
 
@@ -153,31 +191,36 @@ void ServerAssignment03::Execute()
 				{
 					case NetworkTag::Sync:
 					{
-						// Syncƒ^ƒO‚Ìê‡
-						// óMƒf[ƒ^‚ğplInfo‚ÉƒRƒs[‚·‚é
+						// Syncã‚¿ã‚°ã®å ´åˆ
+						// å—ä¿¡ãƒ‡ãƒ¼ã‚¿ã‚’plInfoã«ã‚³ãƒ”ãƒ¼ã™ã‚‹
 						PlayerInformation plInfo{};
 						memcpy_s(&plInfo, sizeof(PlayerInformation), buffer, sizeof(PlayerInformation));
-
-						// óMƒf[ƒ^‚ğ•\¦
+						
+						// å—ä¿¡ãƒ‡ãƒ¼ã‚¿ã‚’è¡¨ç¤º
 						std::cout << "position :(" << plInfo.position.x << "," << plInfo.position.y << "," << plInfo.position.z << ")" << std::endl;
 						std::cout << "angle :(" << plInfo.angle.x << "," << plInfo.angle.y << "," << plInfo.angle.z << ")" << std::endl;
 						std::cout << "state : " << static_cast<int>(plInfo.state) << std::endl;
 
-						// Šù‘¶ƒNƒ‰ƒCƒAƒ“ƒg‘Sˆõ‚É‘—M
-						for (Client* client : clients)
+						// æ—¢å­˜ã‚¯ãƒ©ã‚¤ã‚¢ãƒ³ãƒˆå…¨å“¡ã«é€ä¿¡
+						for (Client* client : clients)//ã‚¯ãƒ©ã‚¤ã‚¢ãƒ³ãƒˆæ•°ã ã‘ãƒ«ãƒ¼ãƒ—
 						{
-							// ƒvƒŒƒCƒ„[‚ÌƒT[ƒoî•ñXV
+							// ã‚µãƒ¼ãƒã®ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼æƒ…å ±æ›´æ–°
 							if (client->player.id == plInfo.id)
-							{
+							{//é€ä¿¡è€…ã ã£ãŸã‚‰ã€€ã‚µãƒ¼ãƒãƒ¼ã®ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼æƒ…å ±ã‚’æƒ…å ±æ›´æ–°ã—ã¦
 								client->player.position = plInfo.position;
 								client->player.angle = plInfo.angle;
 								client->player.state = plInfo.state;
 							}
 							else
-							{
+							{//é€ä¿¡è€…ä»¥å¤–ã«ã¯é…ä¿¡ã™ã‚‹
+								//-------------------------------------------
 								// TODO 03_05
-								// ƒvƒŒƒCƒ„[î•ñ‚ğ‘—M‚·‚é
-
+								// ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼æƒ…å ±ã‚’é€ä¿¡ã™ã‚‹(sendtoã§plInfoã‚’é€ã‚‹)
+								size = sendto(sock, reinterpret_cast<char*>(&plInfo),
+									sizeof(PlayerInformation),
+									0,
+									reinterpret_cast<sockaddr*>(&client->addr),
+									static_cast<int>(sizeof(sockaddr_in)));
 
 								if (size < 0)
 								{
@@ -189,24 +232,29 @@ void ServerAssignment03::Execute()
 					}
 					case NetworkTag::Logout:
 					{
-						// ƒƒOƒAƒEƒgƒf[ƒ^‚Ìê‡
-						// óMƒf[ƒ^‚ğlogoput‚ÉƒRƒs[‚·‚é
+						// ãƒ­ã‚°ã‚¢ã‚¦ãƒˆãƒ‡ãƒ¼ã‚¿ã®å ´åˆ
+						// å—ä¿¡ãƒ‡ãƒ¼ã‚¿ã‚’logoputã«ã‚³ãƒ”ãƒ¼ã™ã‚‹
 						PlayerLogout logout{};
 						memcpy_s(&logout, sizeof(PlayerLogout), buffer, sizeof(PlayerLogout));
 
 						for (auto it = clients.begin(); it != clients.end();)
 						{
-							// ‘—MÒ‚Æid‚ª“¯‚¶‚Æ‚«
+							// é€ä¿¡è€…ã¨idãŒåŒã˜ã¨ã
 							if ((*it)->player.id == logout.id) {
-								// ƒf[ƒ^‚ğíœ
+								// ãƒ‡ãƒ¼ã‚¿ã‚’å‰Šé™¤
 								it = clients.erase(it);
 							}
 							else {
+								//--------------------------------------------
 								// TODO 03_06
-								// logoutƒf[ƒ^‚ğ‘—MÒˆÈŠO‚É‘—M
+								// logoutãƒ‡ãƒ¼ã‚¿ã‚’é€ä¿¡è€…ä»¥å¤–ã«é€ä¿¡(sendtoã§logoutã‚’é€ã‚‹)
+								size = sendto(sock, reinterpret_cast<char*>(&logout),
+									sizeof(PlayerInformation),
+									0,
+									reinterpret_cast<sockaddr*>(&(*it)->addr),
+									static_cast<int>(sizeof(sockaddr_in)));
 
-
-								++it; // Ÿ‚Ì—v‘f‚Éi‚Ş
+								++it; // æ¬¡ã®è¦ç´ ã«é€²ã‚€
 							}
 						}
 						break;
@@ -225,7 +273,7 @@ void ServerAssignment03::Execute()
 	th.join();
 
 
-	// ƒNƒ‰ƒCƒAƒ“ƒgI—¹ˆ—
+	// ã‚¯ãƒ©ã‚¤ã‚¢ãƒ³ãƒˆçµ‚äº†å‡¦ç†
 	for (Client* client : clients)
 	{
 		if (client != nullptr)
@@ -235,13 +283,13 @@ void ServerAssignment03::Execute()
 		}
 	}
 
-	// ƒT[ƒoƒ\ƒPƒbƒg‚ÌØ’f
+	// ã‚µãƒ¼ãƒã‚½ã‚±ãƒƒãƒˆã®åˆ‡æ–­
 	if (closesocket(sock) != 0) {
 		int err = WSAGetLastError();
 		std::cout << "Close Socket Failed.error_code:" << err << "." << std::endl;
 	}
 
-	// WSAI—¹
+	// WSAçµ‚äº†
 	if (WSACleanup() != 0)
 	{
 		std::cout << "Cleanup WinsockAPI Failed." << std::endl;
@@ -250,6 +298,8 @@ void ServerAssignment03::Execute()
 	std::cout << "Cleanup WinsockAPI Success." << std::endl;
 }
 
+//----ã‚¢ãƒ‰ãƒ¬ã‚¹ç¢ºèª--------------------------------------------------------------
+//æ‰€æŒã‚¯ãƒ©ã‚¤ã‚¢ãƒ³ãƒˆæƒ…å ±ã¨ã€æ–°è¦ã‚¯ãƒ©ã‚¤ã‚¢ãƒ³ãƒˆã‚’æ¯”ã¹ã¦æ—¢ã«å­˜åœ¨ã™ã‚‹ã‹ã‚’ãƒã‚§ãƒƒã‚¯
 bool ServerAssignment03::HasSameData(const std::vector<Client*>& vec, const sockaddr_in& target)
 {
 	for (const Client* client : vec)

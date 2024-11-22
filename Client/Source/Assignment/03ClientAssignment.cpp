@@ -1,105 +1,135 @@
-#include <WinSock2.h>
+ï»¿#include <WinSock2.h>
 #include "03ClientAssignment.h"
 
-// ƒƒ‚ƒŠƒŠ[ƒN’²¸—p
+// ãƒ¡ãƒ¢ãƒªãƒªãƒ¼ã‚¯èª¿æŸ»ç”¨
 #define debug_new new(_NORMAL_BLOCK,__FILE__,__LINE__)
 
+//--å®šæ•°-------
+static const int BUFFER_SIZE = 2048;
+static const int PORT = 7000;
+static const int SEND_PORT = 7001;
+static const int IPADD[] = {127,0,0,1};
+static const int NONBLOCK_MODE = 1;
+static const int DUMMY_ID = -1;
+#define XYZ000	DirectX::XMFLOAT3(0.0f,0.0f,0.0f)
+#define PLAYER_SIZE DirectX::XMFLOAT3(0.02f,0.02f,0.02f)
 
+//---------ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿----------------------------------
 ClientAssignment03::ClientAssignment03()
 {
 	input[0] = '\0';
 }
 
+//---------ãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿-----------------------------------
 ClientAssignment03::~ClientAssignment03()
 {
 	
 }
 
+//---------åˆæœŸåŒ–-----------------------------------------
 void ClientAssignment03::Initialize()
 {
 	SceneBase::Initialize();
 	int wsaStartUp = WSAStartup(MAKEWORD(2, 2), &wsaData);
 	if (wsaStartUp != 0)
 	{
-		// ‰Šú‰»¸”s
+		// åˆæœŸåŒ–å¤±æ•—
 		Logger::Print("WSA Initialize Failed.");
 		return;
 	}
 
-	// Ú‘±æî•ñİ’è
+	// æ¥ç¶šå…ˆæƒ…å ±è¨­å®š
 	addr.sin_family = AF_INET;
-	addr.sin_port = htons(7000);
+	addr.sin_port = htons(PORT);
 
-	// Ú‘±æIPİ’è
-	addr.sin_addr.S_un.S_un_b.s_b1 = 127;
-	addr.sin_addr.S_un.S_un_b.s_b2 = 0;
-	addr.sin_addr.S_un.S_un_b.s_b3 = 0;
-	addr.sin_addr.S_un.S_un_b.s_b4 = 1;
+	// æ¥ç¶šå…ˆIPè¨­å®š
+	addr.sin_addr.S_un.S_un_b.s_b1 = IPADD[0];
+	addr.sin_addr.S_un.S_un_b.s_b2 = IPADD[1];
+	addr.sin_addr.S_un.S_un_b.s_b3 = IPADD[2];
+	addr.sin_addr.S_un.S_un_b.s_b4 = IPADD[3];
 
-	// ‘—M‚·‚éÛ‚Ìƒ|[ƒg‚ğw’è‚·‚é
+	// é€ä¿¡ã™ã‚‹éš›ã®ãƒãƒ¼ãƒˆã‚’æŒ‡å®šã™ã‚‹
 	self.sin_family = AF_INET;
-	self.sin_port = htons(7001);
+	self.sin_port = htons(SEND_PORT);
 
-	// Ú‘±æIPİ’è
+	// æ¥ç¶šå…ˆIPè¨­å®š
 	self.sin_addr.S_un.S_un_b.s_b1 = 0;
 	self.sin_addr.S_un.S_un_b.s_b2 = 0;
 	self.sin_addr.S_un.S_un_b.s_b3 = 0;
 	self.sin_addr.S_un.S_un_b.s_b4 = 0;
 
 
-	// ƒ\ƒPƒbƒgì¬
+	// ã‚½ã‚±ãƒƒãƒˆä½œæˆ
 	sock = socket(AF_INET, SOCK_DGRAM, 0);
 	if (sock == INVALID_SOCKET) {
 		Logger::Print("create socket Failed.");
 		return;
 	}
 
-	// ƒmƒ“ƒuƒƒbƒLƒ“ƒOİ’è
-	u_long mode = 1;
+	// ãƒãƒ³ãƒ–ãƒ­ãƒƒã‚­ãƒ³ã‚°è¨­å®š
+	u_long mode = NONBLOCK_MODE;
 	int m = ioctlsocket(sock, FIONBIO, &mode);
 	if (m != 0)
 	{
 		Logger::Print("Nonblocking Mode Failed.\n");
 		return;
 	}
-	// V‹Kƒ†[ƒU‚ÌID‚Íƒ_ƒ~[ƒf[ƒ^‚Æ‚µ‚Ä-1‚É‚µ‚Ä‚¨‚­
+	// æ–°è¦ãƒ¦ãƒ¼ã‚¶ã®IDã¯ãƒ€ãƒŸãƒ¼ãƒ‡ãƒ¼ã‚¿ã¨ã—ã¦(DUMMY_ID:-1)ã«ã—ã¦ãŠã
 	PlayerLogin login{};
 	login.cmd = NetworkTag::Login;
-	login.id = -1;
-	// TODO 03_07
-	// loginƒf[ƒ^‚Ì‘—M
+	login.id = DUMMY_ID;
+
+	//------------------------------------
+	// TODO 03_10
+	// loginãƒ‡ãƒ¼ã‚¿ã®é€ä¿¡
+	int size = sendto(sock, reinterpret_cast<char*>(&login),
+		sizeof(login), 0,
+		reinterpret_cast<sockaddr*>(&addr), sizeof(addr));
+	if (size < 0)
+	{
+		Logger::Print("connect failed err:%d\n", WSAGetLastError());
+	}
+	else
+	{
+		Logger::Print("connect Success!\n", WSAGetLastError());
+	}
 
 
-
-
-	// Playerİ’è
+	// Playerè¨­å®š
 	playerManager = debug_new PlayerManager();
 
-	// óMƒXƒŒƒbƒhÀ‘•
+	// å—ä¿¡ã‚¹ãƒ¬ãƒƒãƒ‰å®Ÿè£…
 	recvTh = std::thread(&ClientAssignment03::recvThread, this);
 }
 
 
+//---------çµ‚äº†å‡¦ç†-----------------------------------------
 void ClientAssignment03::Finalize()
 {
 
-	// ƒ}ƒ‹ƒ`ƒXƒŒƒbƒh‚Ìƒ‹[ƒvƒtƒ‰ƒO‚ğ‰º‚ë‚·
+	// ãƒãƒ«ãƒã‚¹ãƒ¬ãƒƒãƒ‰ã®ãƒ«ãƒ¼ãƒ—ãƒ•ãƒ©ã‚°ã‚’ä¸‹ã‚ã™
 	loop = false;
 
 	PlayerLogout logout{};
+	
+	//--------------------------------------------
+	// TODO 03_13
+	// logoutãƒ‡ãƒ¼ã‚¿ã‚’é€ä¿¡
 	logout.cmd = NetworkTag::Logout;
 	logout.id = playerManager->GetMyPlayerID();
-	int size = 0;
-	
-	// TODO 03_10
-	// logoutƒf[ƒ^‚ğ‘—M
+	int size = sendto(sock, reinterpret_cast<char*>(&logout), sizeof(logout),
+		0, reinterpret_cast<sockaddr*>(&addr), static_cast<int>(sizeof(addr)));
+	if (size < 0)
+	{
+		Logger::Print("LogoutErr No:%d\n", WSAGetLastError());
+	}
 
 
 
-	// ƒXƒŒƒbƒh‚ÌI—¹‚Ü‚Å‘Ò‹@
+	// ã‚¹ãƒ¬ãƒƒãƒ‰ã®çµ‚äº†ã¾ã§å¾…æ©Ÿ
 	recvTh.join();
 
-	// serverI—¹ˆ—
+	// serverçµ‚äº†å‡¦ç†
 	if (closesocket(sock) != 0) {
 		int err = WSAGetLastError();
 		Logger::Print("Close Socket Failed.error_code:%d\n", err);
@@ -107,7 +137,7 @@ void ClientAssignment03::Finalize()
 		}
 	}
 
-	// WSAI—¹ˆ—
+	// WSAçµ‚äº†å‡¦ç†
 	if (WSACleanup() != 0)
 	{
 		int err = WSAGetLastError();
@@ -115,16 +145,17 @@ void ClientAssignment03::Finalize()
 	}
 }
 
+//---------æç”»ï¼šãƒ•ãƒ¬ãƒ¼ãƒ -----------------------------------------
 void ClientAssignment03::Render()
 {
-	// Šî’êƒNƒ‰ƒX‚ÌƒŒƒ“ƒ_[ŒÄ‚Ño‚µ
+	// åŸºåº•ã‚¯ãƒ©ã‚¹ã®ãƒ¬ãƒ³ãƒ€ãƒ¼å‘¼ã³å‡ºã—
 	SceneBase::Render();
 	// imgui
 	ImGui::SetNextWindowPos(ImVec2(50, 50), ImGuiCond_Once);
 	ImGui::SetNextWindowSize(ImVec2(300, 100), ImGuiCond_Once);
 	if (ImGui::Begin("Title", nullptr, ImGuiWindowFlags_None))
 	{
-		if (ImGui::Button(u8"ƒ^ƒCƒgƒ‹‚Ö"))
+		if (ImGui::Button(u8"ã‚¿ã‚¤ãƒˆãƒ«ã¸"))
 		{
 			SceneManager::Instance().ChangeScene(new SceneTitle());
 		}
@@ -132,19 +163,20 @@ void ClientAssignment03::Render()
 	ImGui::End();
 }
 
+//---------ãƒãƒƒãƒˆãƒ¯ãƒ¼ã‚¯ã‚²ãƒ¼ãƒ æ›´æ–°-----------------------------------------
 void ClientAssignment03::NetrowkUpdate(float elapsedTime)
 {
-	// ‘€ìƒLƒƒƒ‰ƒNƒ^[æ“¾
+	// æ“ä½œã‚­ãƒ£ãƒ©ã‚¯ã‚¿ãƒ¼å–å¾—
 	Player* player = playerManager->GetMyPlayer();
 
-	// ƒJƒƒ‰ƒRƒ“ƒgƒ[ƒ‰[XVˆ—
+	// ã‚«ãƒ¡ãƒ©ã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ©ãƒ¼æ›´æ–°å‡¦ç†
 	if (player != nullptr)
 	{
 		HWND hWnd;
 		hWnd = GetActiveWindow();
 		if (hWnd != NULL)
 		{
-			// ƒL[“ü—Í”»’è(“ü—Íƒf[ƒ^‚Í‚»‚Ì‚Ü‚ÜƒT[ƒo‚É‘—‚ç‚¸XV)
+			// ã‚­ãƒ¼å…¥åŠ›åˆ¤å®š(å…¥åŠ›ãƒ‡ãƒ¼ã‚¿ã¯ãã®ã¾ã¾ã‚µãƒ¼ãƒã«é€ã‚‰ãšæ›´æ–°)
 			switch (player->GetState())
 			{
 				case Player::State::Idle:
@@ -177,22 +209,33 @@ void ClientAssignment03::NetrowkUpdate(float elapsedTime)
 		}
 
 
-		// –ˆƒtƒŒ[ƒ€‘—M‚·‚é“¯Šúƒf[ƒ^
+		// æ¯ãƒ•ãƒ¬ãƒ¼ãƒ é€ä¿¡ã™ã‚‹åŒæœŸãƒ‡ãƒ¼ã‚¿
 		PlayerInformation plInfo{};
 		plInfo.cmd = NetworkTag::Sync;
 
-		// ‘—Mƒf[ƒ^
+		// é€ä¿¡ãƒ‡ãƒ¼ã‚¿
 		plInfo.id = player->GetPlayerID();
 		plInfo.position = player->GetPosition();
 		plInfo.angle = player->GetAngle();
 		plInfo.state = player->GetState();
 
-		// TODO 03_08
-		// “¯Šúƒf[ƒ^‚ğ‘—M
+		//-----------------------------------------------
+		// TODO 03_11
+		// åŒæœŸãƒ‡ãƒ¼ã‚¿ã‚’é€ä¿¡
+		int size = sendto(sock,
+			reinterpret_cast<char*>(&plInfo), sizeof(plInfo), 0,
+			reinterpret_cast<sockaddr*>(&addr),
+			static_cast<int>(sizeof(sockaddr_in)));
+
+		if (size < 0)
+		{
+			Logger::Print("SendToFailed ERR:%d\n", WSAGetLastError());
+		}
 
 	}
 }
 
+//---------å—ä¿¡ç”¨ã‚¹ãƒ¬ãƒƒãƒ‰-----------------------------------------
 void ClientAssignment03::recvThread()
 {
 	int size = sizeof(sockaddr_in);
@@ -201,22 +244,23 @@ void ClientAssignment03::recvThread()
 		int r = recvfrom(sock, reinterpret_cast<char*>(&buffer), sizeof(buffer), 0, reinterpret_cast<sockaddr*>(&recvAddr), &size);
 		if (r > 0)
 		{
-			// TODO 03_09
-			// óMƒf[ƒ^‚Ìˆ—‚ÌƒR[ƒh‚ğ“Ç‚İ—‰ğ‚ğs‚¤‚±‚ÆB
+			//-----------------------------------------------------
+			// TODO 03_12
+			// å—ä¿¡ãƒ‡ãƒ¼ã‚¿ã®å‡¦ç†ã®ã‚³ãƒ¼ãƒ‰ã‚’èª­ã¿ç†è§£ã‚’è¡Œã†ã“ã¨ã€‚
 			
-			// óMƒf[ƒ^‚©‚çƒlƒbƒgƒ[ƒNƒ^ƒO‚ğæ“¾
+			// å—ä¿¡ãƒ‡ãƒ¼ã‚¿ã‹ã‚‰ãƒãƒƒãƒˆãƒ¯ãƒ¼ã‚¯ã‚¿ã‚°ã‚’å–å¾—
 			short type = 0;
 			memcpy_s(&type, sizeof(short), buffer, sizeof(short));
 			switch (static_cast<NetworkTag>(type))
 			{
 				case NetworkTag::Sync:
 				{
-					// Syncƒ^ƒO‚Ìê‡
-					// óMƒf[ƒ^‚ğplInfo‚ÉƒRƒs[‚·‚é
+					// Syncã‚¿ã‚°ã®å ´åˆ
+					// å—ä¿¡ãƒ‡ãƒ¼ã‚¿ã‚’plInfoã«ã‚³ãƒ”ãƒ¼ã™ã‚‹
 					PlayerInformation plInfo{};
 					memcpy_s(&plInfo, sizeof(PlayerInformation), buffer, sizeof(PlayerInformation));
 
-					// óMƒf[ƒ^‚ğƒƒOo—Í
+					// å—ä¿¡ãƒ‡ãƒ¼ã‚¿ã‚’ãƒ­ã‚°å‡ºåŠ›
 					Logger::Print("recv data id:%d\n", plInfo.id);
 					Logger::Print("position x:%d", plInfo.position.x);
 					Logger::Print("y:%d", plInfo.position.y);
@@ -227,25 +271,26 @@ void ClientAssignment03::recvThread()
 					Logger::Print("state:%d\n", static_cast<int>(plInfo.state));
 
 					bool inserted = false;
-					// id‚ª“o˜^‚³‚ê‚Ä‚¢‚é‚©Šm”F
+					// idãŒç™»éŒ²ã•ã‚Œã¦ã„ã‚‹ã‹ç¢ºèª
 					for (Player* player : playerManager->GetPlayers())
 					{
 						if (player->GetPlayerID() == plInfo.id)
 						{
-							// “o˜^Ïƒtƒ‰ƒO‚ğ—§‚Ä‚é
+							// ç™»éŒ²æ¸ˆãƒ•ãƒ©ã‚°ã‚’ç«‹ã¦ã‚‹
 							inserted = true;
 						}
 					}
-					// “o˜^‚³‚ê‚Ä‚¢‚È‚¢ê‡AƒNƒ‰ƒCƒAƒ“ƒg‚æ‚èæ‚ÉƒƒOƒCƒ“‚µ‚Ä‚¢‚é
-					// ƒvƒŒƒCƒ„[‚Ìƒf[ƒ^‚Ì‚½‚ßV‹K“o˜^‚ğs‚¤B
+					// ç™»éŒ²ã•ã‚Œã¦ã„ãªã„å ´åˆã€ã‚¯ãƒ©ã‚¤ã‚¢ãƒ³ãƒˆã‚ˆã‚Šå…ˆã«ãƒ­ã‚°ã‚¤ãƒ³ã—ã¦ã„ã‚‹
+					// ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®ãƒ‡ãƒ¼ã‚¿ã®ãŸã‚æ–°è¦ç™»éŒ²ã‚’è¡Œã†ã€‚
+
 					if (!inserted)
 					{
-						// V‹K“o˜^
+						// æ–°è¦ç™»éŒ²
 						Player* player = debug_new Player();
 						player->SetPlayerID(plInfo.id);
 						player->SetPosition(plInfo.position);
 						player->SetAngle(plInfo.angle);
-						player->SetScale(DirectX::XMFLOAT3(0.02f, 0.02f, 0.02f));
+						player->SetScale(PLAYER_SIZE);
 						player->SetModel();
 						player->GetJobClass()->ChangeState(plInfo.state);
 						player->SetReady(true);
@@ -254,36 +299,37 @@ void ClientAssignment03::recvThread()
 					}
 					else
 					{
-						// ‚·‚Å‚É“o˜^‚³‚ê‚Ä‚¢‚éê‡Aƒf[ƒ^XV
+						// ã™ã§ã«ç™»éŒ²ã•ã‚Œã¦ã„ã‚‹å ´åˆã€ãƒ‡ãƒ¼ã‚¿æ›´æ–°
 						Player* player = playerManager->GetPlayer(plInfo.id);
 						player->SetPosition(plInfo.position);
 						player->SetAngle(plInfo.angle);
-						player->SetScale(DirectX::XMFLOAT3(0.02f, 0.02f, 0.02f));
+						player->SetScale(PLAYER_SIZE);
 						player->GetJobClass()->ChangeState(plInfo.state);
 					}
 					Logger::Print("Synchronize Data id:%d\n", std::to_string(plInfo.id));
 
 					break;
 				}
+
 				case NetworkTag::Login:
 				{
-					// Loginƒ^ƒO‚Ìê‡
-					// óMƒf[ƒ^‚ğLogin‚ÉƒRƒs[‚·‚é
+					// Loginã‚¿ã‚°ã®å ´åˆ
+					// å—ä¿¡ãƒ‡ãƒ¼ã‚¿ã‚’Loginã«ã‚³ãƒ”ãƒ¼ã™ã‚‹
 					PlayerLogin login{};
 					memcpy_s(&login, sizeof(PlayerLogin), buffer, sizeof(PlayerLogin));
 
-					// ƒvƒŒƒCƒ„[V‹K“o˜^
+					// ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼æ–°è¦ç™»éŒ²
 					Player* player = debug_new Player();
 					player->SetPlayerID(login.id);
-					player->SetPosition(DirectX::XMFLOAT3(0, 0, 0));
-					player->SetScale(DirectX::XMFLOAT3(0.02f, 0.02f, 0.02f));
-					player->SetAngle(DirectX::XMFLOAT3(0, 0, 0));
+					player->SetPosition(XYZ000);
+					player->SetScale(PLAYER_SIZE);
+					player->SetAngle(XYZ000);
 					player->SetModel();
 					player->GetJobClass()->ChangeState(Player::State::Idle);
 					player->SetReady(true);
 					playerManager->AddPlayer(player);
 
-					// óM‚µ‚½ID‚ğ‰‰ñ‚¾‚¯İ’è
+					// å—ä¿¡ã—ãŸIDã‚’åˆå›ã ã‘è¨­å®š
 					if (playerManager->GetMyPlayerID() < 0)
 					{
 						playerManager->SetMyPlayerID(login.id);
@@ -293,12 +339,12 @@ void ClientAssignment03::recvThread()
 				}
 				case NetworkTag::Logout:
 				{
-					// Logoutƒ^ƒO‚Ìê‡
-					// óMƒf[ƒ^‚ğLogout‚ÉƒRƒs[‚·‚é
+					// Logoutã‚¿ã‚°ã®å ´åˆ
+					// å—ä¿¡ãƒ‡ãƒ¼ã‚¿ã‚’Logoutã«ã‚³ãƒ”ãƒ¼ã™ã‚‹
 					PlayerLogout logout{};
 					memcpy_s(&logout, sizeof(PlayerLogout), buffer, sizeof(PlayerLogout));
-					// ƒƒOƒAƒEƒg‚µ‚½ƒvƒŒƒCƒ„[‚ğíœ—p”z—ñ‚É•Û‘¶
-					// íœ©‘Ì‚ÍUpdateŠÖ”‚ÌÅŒã‚ÉÀs‚µ‚Ä‚¢‚é
+					// ãƒ­ã‚°ã‚¢ã‚¦ãƒˆã—ãŸãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã‚’å‰Šé™¤ç”¨é…åˆ—ã«ä¿å­˜
+					// å‰Šé™¤è‡ªä½“ã¯Updateé–¢æ•°ã®æœ€å¾Œã«å®Ÿè¡Œã—ã¦ã„ã‚‹
 					playerManager->ErasePlayer(logout.id);
 					Logger::Print("Delete Player ID:%d\n", logout.id);
 					break;

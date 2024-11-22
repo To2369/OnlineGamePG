@@ -1,4 +1,75 @@
-﻿  01ClientAssignment.cpp
+﻿  compilation object save succeeded; see C:\Users\2220082\OneDrive - yamaguchigakuen\デスクトップ\OnlineGamePG\Client\Shader\DebugPS.cso
+  compilation object save succeeded; see C:\Users\2220082\OneDrive - yamaguchigakuen\デスクトップ\OnlineGamePG\Client\Shader\DebugVS.cso
+  compilation object save succeeded; see C:\Users\2220082\OneDrive - yamaguchigakuen\デスクトップ\OnlineGamePG\Client\Shader\FontPS.cso
+  compilation object save succeeded; see C:\Users\2220082\OneDrive - yamaguchigakuen\デスクトップ\OnlineGamePG\Client\Shader\FontVS.cso
+  compilation object save succeeded; see C:\Users\2220082\OneDrive - yamaguchigakuen\デスクトップ\OnlineGamePG\Client\Shader\ImGuiPS.cso
+  compilation object save succeeded; see C:\Users\2220082\OneDrive - yamaguchigakuen\デスクトップ\OnlineGamePG\Client\Shader\ImGuiVS.cso
+  compilation object save succeeded; see C:\Users\2220082\OneDrive - yamaguchigakuen\デスクトップ\OnlineGamePG\Client\Shader\LambertPS.cso
+  compilation object save succeeded; see C:\Users\2220082\OneDrive - yamaguchigakuen\デスクトップ\OnlineGamePG\Client\Shader\LambertVS.cso
+  compilation object save succeeded; see C:\Users\2220082\OneDrive - yamaguchigakuen\デスクトップ\OnlineGamePG\Client\Shader\LinePS.cso
+  compilation object save succeeded; see C:\Users\2220082\OneDrive - yamaguchigakuen\デスクトップ\OnlineGamePG\Client\Shader\LineVS.cso
+  compilation object save succeeded; see C:\Users\2220082\OneDrive - yamaguchigakuen\デスクトップ\OnlineGamePG\Client\Shader\SpritePS.cso
+  compilation object save succeeded; see C:\Users\2220082\OneDrive - yamaguchigakuen\デスクトップ\OnlineGamePG\Client\Shader\SpriteVS.cso
+  WICTextureLoader.cpp
+  imgui.cpp
+  imgui_demo.cpp
+  imgui_draw.cpp
+  imgui_impl_dx11.cpp
+  imgui_impl_win32.cpp
+  imgui_widgets.cpp
+  01ClientAssignment.cpp
+  02ClientAssignment.cpp
+  03ClientAssignment.cpp
+  04ClientAssignment.cpp
+  05ClientAssignment.cpp
+  06ClientAssignment.cpp
+  07ClientAssignment.cpp
+  08ClientAssignment.cpp
+  09ClientAssignment.cpp
+  10ClientAssignment.cpp
+  Audio.cpp
+  AudioResource.cpp
+  AudioSource.cpp
 C:\Users\2220082\OneDrive - yamaguchigakuen\デスクトップ\OnlineGamePG\Client\Source\Assignment\01ClientAssignment.cpp(85,55): warning C4267: '引数': 'size_t' から 'int' に変換しました。データが失われているかもしれません。
+  Camera.cpp
+  CameraController.cpp
+  Actor.cpp
+  JobClass.cpp
+  Player.cpp
+  Collision.cpp
+  DebugRenderer.cpp
+C:\Users\2220082\OneDrive - yamaguchigakuen\デスクトップ\OnlineGamePG\Client\Source\Assignment\07ClientAssignment.cpp(149,8): warning C4101: 'request': ローカル変数は 1 度も使われていません。
+C:\Users\2220082\OneDrive - yamaguchigakuen\デスクトップ\OnlineGamePG\Client\Source\Assignment\07ClientAssignment.cpp(159,8): warning C4101: 'buf': ローカル変数は 1 度も使われていません。
+C:\Users\2220082\OneDrive - yamaguchigakuen\デスクトップ\OnlineGamePG\Client\Source\Assignment\07ClientAssignment.cpp(137,8): warning C4101: 'ssl': ローカル変数は 1 度も使われていません。
+C:\Users\2220082\OneDrive - yamaguchigakuen\デスクトップ\OnlineGamePG\Client\Source\Assignment\07ClientAssignment.cpp(133,12): warning C4101: 'ctx': ローカル変数は 1 度も使われていません。
+  Font.cpp
+C:\Users\2220082\OneDrive - yamaguchigakuen\デスクトップ\OnlineGamePG\Client\Source\Assignment\09ClientAssignment.cpp(104,18): warning C4101: 'ctx': ローカル変数は 1 度も使われていません。
+C:\Users\2220082\OneDrive - yamaguchigakuen\デスクトップ\OnlineGamePG\Client\Source\Assignment\09ClientAssignment.cpp(135,18): warning C4101: 'ctx': ローカル変数は 1 度も使われていません。
+  Graphics.cpp
+  ImGuiRenderer.cpp
+  LambertShader.cpp
+C:\Users\2220082\OneDrive - yamaguchigakuen\デスクトップ\OnlineGamePG\Client\Source\Assignment\10ClientAssignment.cpp(169,12): warning C4101: 'pKey': ローカル変数は 1 度も使われていません。
+C:\Users\2220082\OneDrive - yamaguchigakuen\デスクトップ\OnlineGamePG\Client\Source\Assignment\10ClientAssignment.cpp(207,12): warning C4101: 'pKey': ローカル変数は 1 度も使われていません。
+C:\Users\2220082\OneDrive - yamaguchigakuen\デスクトップ\OnlineGamePG\Client\Source\Assignment\10ClientAssignment.cpp(212,16): warning C4101: 'ctx': ローカル変数は 1 度も使われていません。
+C:\Users\2220082\OneDrive - yamaguchigakuen\デスクトップ\OnlineGamePG\Client\Source\Assignment\10ClientAssignment.cpp(261,12): warning C4101: 'pKey': ローカル変数は 1 度も使われていません。
+C:\Users\2220082\OneDrive - yamaguchigakuen\デスクトップ\OnlineGamePG\Client\Source\Assignment\10ClientAssignment.cpp(266,16): warning C4101: 'ctx': ローカル変数は 1 度も使われていません。
+C:\Users\2220082\OneDrive - yamaguchigakuen\デスクトップ\OnlineGamePG\Client\Source\Assignment\10ClientAssignment.cpp(313,12): warning C4101: 'pKey': ローカル変数は 1 度も使われていません。
+C:\Users\2220082\OneDrive - yamaguchigakuen\デスクトップ\OnlineGamePG\Client\Source\Assignment\10ClientAssignment.cpp(318,16): warning C4101: 'ctx': ローカル変数は 1 度も使われていません。
+C:\Users\2220082\OneDrive - yamaguchigakuen\デスクトップ\OnlineGamePG\Client\Source\Assignment\10ClientAssignment.cpp(360,12): warning C4101: 'pKey': ローカル変数は 1 度も使われていません。
+C:\Users\2220082\OneDrive - yamaguchigakuen\デスクトップ\OnlineGamePG\Client\Source\Assignment\10ClientAssignment.cpp(365,16): warning C4101: 'ctx': ローカル変数は 1 度も使われていません。
+  LineRenderer.cpp
+  Model.cpp
+  ModelResource.cpp
+  Sprite.cpp
+  GamePad.cpp
+  Input.cpp
+  Mouse.cpp
+  Main.cpp
+  Scene.cpp
+  SceneTitle.cpp
+  SceneManager.cpp
+  Stage.cpp
+  Framework.cpp
+  Logger.cpp
      ライブラリ bin\x64\Debug\Client.lib とオブジェクト bin\x64\Debug\Client.exp を作成中
   Client.vcxproj -> C:\Users\2220082\OneDrive - yamaguchigakuen\デスクトップ\OnlineGamePG\Client\bin\x64\Debug\Client.exe
