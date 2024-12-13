@@ -1,6 +1,6 @@
-#include "04ClientAssignment.h"
+ï»¿#include "04ClientAssignment.h"
 
-// ƒƒ‚ƒŠƒŠ[ƒN’²¸—p
+// ãƒ¡ãƒ¢ãƒªãƒªãƒ¼ã‚¯èª¿æŸ»ç”¨
 #define debug_new new(_NORMAL_BLOCK,__FILE__,__LINE__)
 
 
@@ -17,48 +17,48 @@ ClientAssignment04::~ClientAssignment04()
 void ClientAssignment04::Initialize()
 {
 	SceneBase::Initialize();
-	// WinsockAPI‚ğ‰Šú‰»
+	// WinsockAPIã‚’åˆæœŸåŒ–
 	if (WSAStartup(MAKEWORD(2, 2), &wsaData) != 0)
 	{
-		// ‰Šú‰»¸”s
+		// åˆæœŸåŒ–å¤±æ•—
 		Logger::Print("WSA Initialize Failed.\n");
 		return;
 	}
 
 
-	// DNS‚Ö–â‚¢‡‚í‚¹
-	addrinfo hints;				// DNS‚Ö–â‚¢‡‚í‚¹‚É•K—v‚Èî•ñ‚ğİ’è
-	addrinfo* addrInfo = NULL;	// æ“¾‚µ‚½ƒAƒhƒŒƒX‚ª‚±‚±‚É•Û‘¶‚³‚ê‚é
-	// ƒ[ƒƒNƒŠƒA
+	// DNSã¸å•ã„åˆã‚ã›
+	addrinfo hints;				// DNSã¸å•ã„åˆã‚ã›ã«å¿…è¦ãªæƒ…å ±ã‚’è¨­å®š
+	addrinfo* addrInfo = NULL;	// å–å¾—ã—ãŸã‚¢ãƒ‰ãƒ¬ã‚¹ãŒã“ã“ã«ä¿å­˜ã•ã‚Œã‚‹
+	// ã‚¼ãƒ­ã‚¯ãƒªã‚¢
 	ZeroMemory(&hints, sizeof(addrinfo));
-	// İ’è‚·‚éî•ñ‚ğİ’è
-	hints.ai_family = AF_INET;				// IPv4‚Åæ“¾
-	hints.ai_socktype = SOCK_STREAM; 		// TCP’ÊM‚ÅDNSƒT[ƒo‚ÖƒAƒNƒZƒX
+	// è¨­å®šã™ã‚‹æƒ…å ±ã‚’è¨­å®š
+	hints.ai_family = AF_INET;				// IPv4ã§å–å¾—
+	hints.ai_socktype = SOCK_STREAM; 		// TCPé€šä¿¡ã§DNSã‚µãƒ¼ãƒã¸ã‚¢ã‚¯ã‚»ã‚¹
 
-	const char hostname[] = "localhost";	// ƒhƒƒCƒ“w’è
-	const char port[] = "7000";				// ƒ|[ƒg”Ô†w’è
-	// DNS‚Ö–â‚¢‡‚í‚¹0‚Ì‚Æ‚«³í‚ÉŠ®—¹
+	const char hostname[] = "localhost";	// ãƒ‰ãƒ¡ã‚¤ãƒ³æŒ‡å®š
+	const char port[] = "7000";				// ãƒãƒ¼ãƒˆç•ªå·æŒ‡å®š
+	// DNSã¸å•ã„åˆã‚ã›0ã®ã¨ãæ­£å¸¸ã«å®Œäº†
 	if (getaddrinfo(hostname, port, &hints, &addrInfo) != 0) {
 		Logger::Print("getaddrinfo error.\n");
 
 		return;
 	}
 
-	// WinsockAPI‚ğ‰Šú‰»
-	// æ“¾‚µ‚½IPƒAƒhƒŒƒX‚ğsockaddr_in‚É•ÏŠ·‚µsin_addr‚ğ‘ã“ü
+	// WinsockAPIã‚’åˆæœŸåŒ–
+	// å–å¾—ã—ãŸIPã‚¢ãƒ‰ãƒ¬ã‚¹ã‚’sockaddr_inã«å¤‰æ›ã—sin_addrã‚’ä»£å…¥
 	addr.sin_addr = reinterpret_cast<sockaddr_in*>(addrInfo->ai_addr)->sin_addr;
 	addr.sin_family = AF_INET;
 	addr.sin_port = htons(7000);
 
 
-	// ƒ\ƒPƒbƒgì¬
+	// ã‚½ã‚±ãƒƒãƒˆä½œæˆ
 	sock = socket(AF_INET, SOCK_DGRAM, 0);
 	if (sock == INVALID_SOCKET) {
 		Logger::Print("create socket Failed.\n");
 		return;
 	}
 
-	// ƒmƒ“ƒuƒƒbƒLƒ“ƒOİ’è
+	// ãƒãƒ³ãƒ–ãƒ­ãƒƒã‚­ãƒ³ã‚°è¨­å®š
 	u_long mode = 1;
 	int m = ioctlsocket(sock, FIONBIO, &mode);
 	if (m != 0)
@@ -67,7 +67,7 @@ void ClientAssignment04::Initialize()
 		return;
 	}
 
-	// ƒNƒ‰ƒCƒAƒ“ƒgî•ñ‚ğƒT[ƒo‚Ö’m‚ç‚¹‚é‚½‚ß‚ÉsendtoŠÖ”‚ğÅ‰‚ÉÀs‚·‚éB
+	// ã‚¯ãƒ©ã‚¤ã‚¢ãƒ³ãƒˆæƒ…å ±ã‚’ã‚µãƒ¼ãƒã¸çŸ¥ã‚‰ã›ã‚‹ãŸã‚ã«sendtoé–¢æ•°ã‚’æœ€åˆã«å®Ÿè¡Œã™ã‚‹ã€‚
 	PlayerMessage message;
 	message.cmd = NetworkTag::Message;
 	strcpy_s(message.buffer, "connect");
@@ -78,12 +78,12 @@ void ClientAssignment04::Initialize()
 	}
 	Logger::Print("Connect Success\n");
 
-	// Playerİ’è
+	// Playerè¨­å®š
 	playerManager = debug_new PlayerManager();
 	playerManager->SetMyPlayerID(0);
 	Player* player = new Player();
-	// ŠeƒvƒŒƒCƒ„[‚ÌƒLƒƒƒ‰ƒNƒ^[‚É‡‚í‚¹‚½İ’è‚ğs‚¤
-	// JobClass‚ÍƒXƒe[ƒgƒ}ƒVƒ“
+	// å„ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®ã‚­ãƒ£ãƒ©ã‚¯ã‚¿ãƒ¼ã«åˆã‚ã›ãŸè¨­å®šã‚’è¡Œã†
+	// JobClassã¯ã‚¹ãƒ†ãƒ¼ãƒˆãƒã‚·ãƒ³
 	player->SetPlayerID(0);
 	player->SetPosition(DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f));
 	player->SetScale(DirectX::XMFLOAT3(0.02f, 0.02f, 0.02f));
@@ -91,17 +91,17 @@ void ClientAssignment04::Initialize()
 
 	playerManager->AddPlayer(player);
 	playerManager->GetMyPlayer()->SetReady(true);
-	// óMƒXƒŒƒbƒhÀ‘•
+	// å—ä¿¡ã‚¹ãƒ¬ãƒƒãƒ‰å®Ÿè£…
 	recvTh = std::thread(&ClientAssignment04::recvThread, this);
 }
 
 void ClientAssignment04::Finalize()
 {
 
-	// ƒ}ƒ‹ƒ`ƒXƒŒƒbƒh‚Ìƒ‹[ƒvƒtƒ‰ƒO‚ğ‰º‚ë‚·
+	// ãƒãƒ«ãƒã‚¹ãƒ¬ãƒƒãƒ‰ã®ãƒ«ãƒ¼ãƒ—ãƒ•ãƒ©ã‚°ã‚’ä¸‹ã‚ã™
 	loop = false;
 
-	// ƒ\ƒPƒbƒg‚ªƒuƒƒbƒLƒ“ƒO‚È‚Ì‚ÅI—¹ƒR[ƒh‚ğ‘—‚é
+	// ã‚½ã‚±ãƒƒãƒˆãŒãƒ–ãƒ­ãƒƒã‚­ãƒ³ã‚°ãªã®ã§çµ‚äº†ã‚³ãƒ¼ãƒ‰ã‚’é€ã‚‹
 	PlayerLogout logout{};
 	logout.cmd = NetworkTag::Logout;
 	logout.id = playerManager->GetMyPlayerID();
@@ -113,10 +113,10 @@ void ClientAssignment04::Finalize()
 		Logger::Print("finalize send failed. error code:%d\n");
 	}
 
-	// ƒXƒŒƒbƒh‚ÌI—¹‚Ü‚Å‘Ò‹@
+	// ã‚¹ãƒ¬ãƒƒãƒ‰ã®çµ‚äº†ã¾ã§å¾…æ©Ÿ
 	recvTh.join();
 
-	// serverI—¹ˆ—
+	// serverçµ‚äº†å‡¦ç†
 	int r = closesocket(sock);
 	if (r != 0) {
 		int err = WSAGetLastError();
@@ -128,7 +128,7 @@ void ClientAssignment04::Finalize()
 
 void ClientAssignment04::Render()
 {
-	// Šî’êƒNƒ‰ƒX‚ÌƒŒƒ“ƒ_[ŒÄ‚Ño‚µ
+	// åŸºåº•ã‚¯ãƒ©ã‚¹ã®ãƒ¬ãƒ³ãƒ€ãƒ¼å‘¼ã³å‡ºã—
 	SceneBase::Render();
 	// imgui
 	ImGui::SetNextWindowPos(ImVec2(50, 50), ImGuiCond_Once);
@@ -150,7 +150,7 @@ void ClientAssignment04::Render()
 		{
 			if (strcmp(input.buffer, "") != 0)
 			{
-				// ‘—Mˆ—
+				// é€ä¿¡å‡¦ç†
 				int size = sendto(sock, reinterpret_cast<char *>(&input), sizeof(input), 0, reinterpret_cast<sockaddr*>(&addr), static_cast<int>(sizeof(addr)));
 				if (size < 0)
 				{
@@ -159,7 +159,7 @@ void ClientAssignment04::Render()
 			}
 			input.buffer[0] = '\0';
 		}
-		if (ImGui::Button(u8"ƒ^ƒCƒgƒ‹‚Ö"))
+		if (ImGui::Button(u8"ã‚¿ã‚¤ãƒˆãƒ«ã¸"))
 		{
 			SceneManager::Instance().ChangeScene(new SceneTitle());
 		}
@@ -176,7 +176,7 @@ void ClientAssignment04::recvThread()
 		int r = recvfrom(sock, reinterpret_cast<char*>(&buffer), sizeof(buffer), 0, reinterpret_cast<sockaddr*>(&recvAddr), &size);
 		if (r > 0)
 		{
-			// ƒ^ƒO•”•ª‚ğæ“¾‚µˆ—‚ğ•ªŠò‚³‚¹‚é
+			// ã‚¿ã‚°éƒ¨åˆ†ã‚’å–å¾—ã—å‡¦ç†ã‚’åˆ†å²ã•ã›ã‚‹
 			short type = 0;
 			memcpy_s(&type, sizeof(short), buffer, sizeof(short));
 			switch (static_cast<NetworkTag>(type))
@@ -184,10 +184,12 @@ void ClientAssignment04::recvThread()
 				case NetworkTag::Message:
 				{
 					PlayerMessage message;
+					//ãƒ‡ãƒ¼ã‚¿ãƒ—ãƒƒã‚·ãƒ¥ã™ã‚‹ãŸã‚ã«å—ä¿¡ãƒ‡ãƒ¼ã‚¿ã®buffer(ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸å†…å®¹)ã‹ã‚‰messageã«ã‚³ãƒ”ãƒ¼
 					memcpy_s(&message, sizeof(message), buffer, sizeof(message));
 
 					// TODO 04_04
-					// óM‚µ‚½ƒƒbƒZ[ƒW‚ğƒŠƒ“ƒOƒoƒbƒtƒ@‚É•Û‘¶‚·‚éB
+					// å—ä¿¡ã—ãŸãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã‚’ãƒªãƒ³ã‚°ãƒãƒƒãƒ•ã‚¡ã«ä¿å­˜ã™ã‚‹ã€‚
+					messages.push(message);
 
 					break;
 				}
