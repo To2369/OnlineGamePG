@@ -45,7 +45,7 @@ void ClientAssignment05::Initialize()
 
 	// TODO 05_01
 	// 接続先IP設定(ブロードキャストアドレスを指定してください)
-
+	
 
 	// TODO 05_02
 	// ブロードキャスト通信の設定をしてください。

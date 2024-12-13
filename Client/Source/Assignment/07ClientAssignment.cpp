@@ -73,11 +73,11 @@ void ClientAssignment07::Render()
 			// TODO 07_01
 			// ダウンロードファイルの指定
 			// ホスト名(ドメイン部分)
-			std::string hostname = "";
+			std::string hostname = "comp.ecc.ac.jp";
 			// パス
-			std::string path = "";
+			std::string path = "/img/";
 			// ファイル名
-			std::string filename = "";
+			std::string filename = "mvdumy.jpg";
 
 			if (recvTh.joinable())recvTh.join();
 			recvTh = std::thread(&ClientAssignment07::FileDownload, this, hostname, path, filename);
@@ -95,7 +95,7 @@ void ClientAssignment07::FileDownload(const std::string& hostname, const std::st
 {
 	// TODO 07_02
 	// OpenSSLの初期化
-
+	OPENSSL_init_ssl(0, nullptr);
 	WSADATA wsaData;
 	SOCKET sock = INVALID_SOCKET;
 	addrinfo hints = {}, * addrInfo = nullptr;
@@ -130,28 +130,51 @@ void ClientAssignment07::FileDownload(const std::string& hostname, const std::st
 
 		// TODO 07_03
 		// SSLコンテキスト作成
-		SSL_CTX* ctx;
+		SSL_CTX* ctx=SSL_CTX_new(TLS_client_method());
+		if (!ctx)
+		{
+			throw std::runtime_error("SSL_CTXの生成に失敗");
+		}
 
 		// TODO 07_04
 		// SSLオブジェクト作成
-		SSL* ssl;
+		SSL* ssl = SSL_new(ctx);
+		if (!ssl) {
+			SSL_CTX_free(ctx);
+			throw std::runtime_error("SSLの生成に失敗しました");
+		}
 
 		// TODO 07_05
 		// SSLオブジェクトにソケットを関連付ける
-
+		if (SSL_set_fd(ssl, static_cast<int>(sock)) == 0) 
+		{
+			SSL_free(ssl);
+			SSL_CTX_free(ctx);
+			throw std::runtime_error("ソケットとSSLの関連付けに失敗");
+		}
 
 		// TODO 07_06
 		// サーバに接続
-		
+		if (SSL_connect(ssl) <= 0) {
+			SSL_free(ssl);
+			SSL_CTX_free(ctx);
+			throw std::runtime_error("SSL接続に失敗しました");
+		}
 
 		// TODO 07_07
 		// HTTPリクエストを作成
-		char request[1024];
+		char request[1072];
+		snprintf(request, sizeof(request),
+			"GET %s%s HTTP/1.1\r\nHost: %s\r\nConnection: Close\r\n\r\n", 
+			path.c_str(), filename.c_str(), hostname.c_str());
 		
 		
 		// TODO 07_08
 		// リクエスト送信
-
+		if (SSL_write(ssl, request, static_cast<int>(strlen(request))) <= 0)
+		{
+			throw std::runtime_error("送信に失敗しました");
+		}
 
 		Logger::Print("サーバからのレスポンス\n");
 		std::vector<char> data;
@@ -161,7 +184,10 @@ void ClientAssignment07::FileDownload(const std::string& hostname, const std::st
 
 		// TODO 07_09
 		// データ受信ループ
-
+		while ((size = SSL_read(ssl, buf, sizeof(buf))) > 0) {
+			Logger::Print("%s", buf);
+			data.insert(data.end(), buf, buf + size);
+		}
 
 
 		if (size < 0) {
@@ -183,7 +209,9 @@ void ClientAssignment07::FileDownload(const std::string& hostname, const std::st
 
 		// TODO 07_10
 		// リソース解放
-
+		SSL_shutdown(ssl);
+		SSL_free(ssl);
+		SSL_CTX_free(ctx);
 
 		closesocket(sock);
 		WSACleanup();
