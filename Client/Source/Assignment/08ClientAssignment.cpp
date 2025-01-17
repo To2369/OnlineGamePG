@@ -152,29 +152,31 @@ std::string ClientAssignment08::MD5Hashing(std::string data)
 	}
 	// TODO 08_01
 	// mdコンテキストに必要な情報を設定
+	//下記記述3行を課題プリントに合わせ修正
 	EVP_MD_CTX* mdctx{};
-	unsigned int md5Length = 0;// 文字サイズ取得
-	unsigned char* md5{};//メモリ確保して初期化
+	unsigned int md5Length = EVP_MD_size(EVP_md5());// 文字サイズ取得
+	unsigned char* md5=reinterpret_cast<unsigned char*>(OPENSSL_malloc(md5Length));//メモリ確保して初期化
 
 	// TODO 08_02
 	// MDコンテキスト初期化
-
+	mdctx = EVP_MD_CTX_new();
+	EVP_DigestInit_ex(mdctx, EVP_md5(), NULL);
 
 	// TODO 08_03
 	// ハッシュ化したい値を指定
-
+	EVP_DigestUpdate(mdctx, readData.c_str(), readData.size());
 
 	// TODO 08_04
 	// ハッシュ化実行
+	EVP_DigestFinal_ex(mdctx, md5, &md5Length);
 	
-	std::string hashData;
 	// TODO 08_05
-	// 16進数2桁表示に変換
-	// コメントを外してください
-	hashData = ConvertingToHexNumber(md5, md5Length);
+	// md5を16進数2桁表示に変換
+	std::string hashData=ConvertingToHexNumber(md5,md5Length);
 
 	// TODO 08_06
 	// MDコンテキスト開放
+	EVP_MD_CTX_free(mdctx);
 
 	return hashData;
 }
@@ -183,31 +185,30 @@ std::string ClientAssignment08::Sha512Hashing(std::string data)
 {
 	// TODO 08_07
 	// SHA512コンテキストに必要な情報を設定
+	//下記3行を変更
 	EVP_MD_CTX* sha512ctx{};
-	unsigned int shaLength = 0;// 文字サイズ取得
-	unsigned char* sha512{};//メモリ確保して初期化
+	unsigned int shaLength = EVP_MD_size(EVP_sha512());// 文字サイズ取得
+	unsigned char* sha512=reinterpret_cast<unsigned char*>(OPENSSL_malloc(shaLength));//メモリ確保して初期化
 
 	// TODO 08_08
 	// SHA512初期化
-
+	sha512ctx = EVP_MD_CTX_new();
+	EVP_DigestInit_ex(sha512ctx, EVP_sha512(), NULL);
 
 	// TODO 08_09
 	// ハッシュ化したい値を指定
-	
-
+	EVP_DigestUpdate(sha512ctx, data.c_str(), data.size());
 	// TODO 08_10
 	// ハッシュ化実行
+	EVP_DigestFinal_ex(sha512ctx, sha512, &shaLength);
 	
-	
-	std::string hashData;
 	// TODO 08_11
-	// 16進数表示の文字列に変換
-	// 引数にダミーデータが入っているのでハッシュ化後のデータとサイズを指定しなしてください
-	hashData = ConvertingToHexNumber(sha512, shaLength);
+	// sha512を16進数2桁表示に変換
+	std::string hashData = ConvertingToHexNumber(sha512, shaLength);
 
 	// TODO 08_12
 	// SHA256コンテキスト開放
-
+	EVP_MD_CTX_free(sha512ctx);
 
 	return hashData;
 }
